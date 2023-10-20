@@ -1,41 +1,29 @@
 use std::{env};
-
-struct HumanName {
-    FirstNames: Vec<String>,
-    MiddleNames: Vec<String>,
-    LastNames: Vec<String>
-}
+use regex::Regex;
 
 fn main() {
-    let mut deconstructedNames = vec!();
-    let programArgs = env::args();
-    for arg in programArgs{
+    let mut deconstructed_names = vec!();
+    for arg in env::args().skip(1).take(2){
         if !arg.contains("who_are_you"){
-            deconstructedNames.push(deconstruct_name(arg));
+            deconstructed_names.push(deconstruct_name(arg, r"[']", r"[,\- ]"));
         }
     }
     
-    println!("{:?}", deconstructedNames);
+    println!("{:?}", deconstructed_names);
 }
 
-fn deconstruct_name(s: String) -> Vec<String>{
-    let mut deconstructed_name: Vec<String> = vec![];
-    let split_input = s.split_whitespace();
-    for namePart in split_input {
-        let mut commaSplitName = namePart.split(',');
-        if let Some(smallerPart) = commaSplitName.next() {
-            deconstructed_name.push(String::from(smallerPart));
-            for smallerPart in commaSplitName {
-                if !str::is_empty(smallerPart) {
-                    deconstructed_name.push(String::from(smallerPart));    
-                }
-            }
-        }
-        else {
-            deconstructed_name.push(String::from(namePart));
-        }
-        
-    }
-    
-    deconstructed_name
+fn deconstruct_name(s: String, remove: &str, split_on: &str) -> Vec<String>{
+    regex_split(regex_replace(&s,remove), split_on)
+}
+
+fn regex_split(s: String, pattern: &str) -> Vec<String> {
+    let re = Regex::new(pattern).unwrap();
+    re.split(&s).into_iter()
+    .map(|x| String::from(x))
+    .filter(|x| !String::is_empty(x)).collect()
+}
+
+fn regex_replace(s: &str, pattern: &str) -> String {
+    let re = Regex::new(pattern).unwrap();
+    re.replace(s, "").to_string()
 }
