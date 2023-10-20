@@ -1,4 +1,4 @@
-use std::{env, path};
+use std::{env};
 
 struct HumanName {
     FirstNames: Vec<String>,
@@ -20,12 +20,12 @@ fn main() {
 
 fn deconstruct_name(s: String) -> Vec<String>{
     let mut deconstructed_name: Vec<String> = vec![];
-    let mut split_input = s.split_whitespace();
-    while let Some(namePart) = split_input.next() {
+    let split_input = s.split_whitespace();
+    for namePart in split_input {
         let mut commaSplitName = namePart.split(',');
         if let Some(smallerPart) = commaSplitName.next() {
             deconstructed_name.push(String::from(smallerPart));
-            while let Some(smallerPart) = commaSplitName.next() {
+            for smallerPart in commaSplitName {
                 if !str::is_empty(smallerPart) {
                     deconstructed_name.push(String::from(smallerPart));    
                 }
