@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 criterion = "0.5.1"
 regex = "1.10.2"
+soundex = "0.2.0"
